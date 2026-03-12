@@ -27,4 +27,18 @@ export class PropertiesService {
     }
     return property;
   }
+
+  /**
+   * Validates if a property is within a specific administrative boundary
+   */
+  async validatePropertyWithinBoundary(propertyId: string, boundaryId: string): Promise<boolean> {
+    const result = await this.propertyRepository
+      .createQueryBuilder('prop')
+      .innerJoin('admin_boundaries', 'boundary', 'boundary.id = :boundaryId', { boundaryId })
+      .where('prop.id = :propertyId', { propertyId })
+      .andWhere('ST_Within(prop.boundary, boundary.boundary)')
+      .getOne();
+
+    return !!result;
+  }
 }
