@@ -21,4 +21,13 @@ export class PropertiesController {
   async findOne(@Param('id') id: string): Promise<Property> {
     return await this.propertiesService.findOne(id);
   }
+
+  @Get(':id/validate-boundary/:boundaryId')
+  async validateBoundary(
+    @Param('id') id: string,
+    @Param('boundaryId') boundaryId: string,
+  ): Promise<{ isValid: boolean }> {
+    const isValid = await this.propertiesService.validatePropertyWithinBoundary(id, boundaryId);
+    return { isValid };
+  }
 }
